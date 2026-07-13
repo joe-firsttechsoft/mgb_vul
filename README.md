@@ -10,7 +10,8 @@ MGB FEP 專案原始碼複製工具，用於產生僅含來源碼的副本以供
 2. **排除特定資料夾** — 固定排除 `fep-suipConnect` 與 `fep-bpm` 兩個目錄。
 3. **過濾測試檔案** — 移除 `src/test/` 路徑下的檔案，但保留檔名包含下列關鍵字的例外檔案：
    - `BatchTaskUtil`
-   - `generator`
+   - `AssemblyPropFileGenerator`
+   - `ReleaseNoteGenerator`
    - `RemoveVersion`
 4. **清除空目錄** — 複製完成後自動刪除目的地中所有空資料夾。
 
@@ -22,7 +23,7 @@ MGB FEP 專案原始碼複製工具，用於產生僅含來源碼的副本以供
 | `-DestinationRoot` | `<腳本目錄>/output/fep` | 輸出目錄路徑（必須位於腳本目錄之下） |
 | `-GitIgnoreFiles` | `$MgbFepRepo/.gitignore`、`$MgbFepRepo/source/.gitignore` | 要解析的 .gitignore 檔案清單 |
 | `-ExtraExcludedDirectories` | `fep-suipConnect`、`fep-bpm` | 額外排除的目錄名稱 |
-| `-KeepTestNameParts` | `BatchTaskUtil`、`generator`、`RemoveVersion` | 即使在 `src/test/` 下也要保留的檔名關鍵字 |
+| `-KeepTestNameParts` | `BatchTaskUtil`、`AssemblyPropFileGenerator`、`ReleaseNoteGenerator`、`RemoveVersion` | 即使在 `src/test/` 下也要保留的檔名關鍵字 |
 
 ## 使用方式
 
@@ -54,7 +55,7 @@ Destination: <輸出路徑>
 Copied files: <已複製檔案數>
 Skipped by gitignore directories: <因 gitignore 跳過的檔案數>
 Skipped src/test files: <因測試目錄跳過的檔案數>
-Kept src/test file name parts: BatchTaskUtil, generator, RemoveVersion
+Kept src/test file name parts: BatchTaskUtil, AssemblyPropFileGenerator, ReleaseNoteGenerator, RemoveVersion
 ```
 
 ## 注意事項
