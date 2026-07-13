@@ -120,7 +120,7 @@ function Convert-GitIgnoreDirectoryPatterns {
         }
     }
 
-    $patterns.Add(".git")
+    $patterns.Add(".git*")
 
     return $patterns |
         Sort-Object -Unique |
@@ -227,6 +227,11 @@ Get-ChildItem -LiteralPath $resolvedSourceRoot -File -Recurse -Force | ForEach-O
     }
     else {
         $relativeDirectory = Convert-ToUnixPath -Path $relativeDirectory
+    }
+
+    if ($_.Name -like ".git*") {
+        $script:skippedIgnoredCount++
+        return
     }
 
     if ($relativeDirectory -ne "." -and
