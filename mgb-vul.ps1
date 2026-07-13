@@ -5,7 +5,8 @@ Builds a source-only copy of the MGB FEP project for vulnerability scanning.
 .DESCRIPTION
 Copies $HOME/Repo/idea_clone/mgbfep/source/fep to a local output folder,
 skipping directories listed in the MGB .gitignore files. Files under src/test are
-removed unless their file name contains BatchTaskUtil, generator, or RemoveVersion.
+removed unless their file name contains BatchTaskUtil, AssemblyPropFileGenerator,
+ReleaseNoteGenerator, or RemoveVersion.
 The fep-suipConnect and fep-bpm folders are also excluded.
 #>
 
@@ -15,7 +16,7 @@ param(
     [string]$DestinationRoot,
     [string[]]$GitIgnoreFiles,
     [string[]]$ExtraExcludedDirectories = @("fep-suipConnect", "fep-bpm"),
-    [string[]]$KeepTestNameParts = @("BatchTaskUtil", "generator", "RemoveVersion")
+    [string[]]$KeepTestNameParts = @("BatchTaskUtil", "AssemblyPropFileGenerator", "ReleaseNoteGenerator", "RemoveVersion")
 )
 
 Set-StrictMode -Version Latest
