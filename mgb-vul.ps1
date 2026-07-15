@@ -204,6 +204,22 @@ $ignoreDirectoryPatterns = @(Convert-GitIgnoreDirectoryPatterns -Files $GitIgnor
 $ignoreDirectoryPatterns += $ExtraExcludedDirectories
 $ignoreDirectoryPatterns = @($ignoreDirectoryPatterns | Sort-Object -Unique)
 
+# 執行前提示使用者選擇測試檔案處理方式
+Write-Host ""
+Write-Host "請選擇測試檔案處理方式："
+Write-Host "  1. 排除 src/test，但保留包含關鍵字的例外檔案（$($KeepTestNameParts -join '、')）[預設]"
+Write-Host "  2. 排除 src/test（全部移除）"
+Write-Host "  3. 全部複製（不排除任何測試檔案）"
+Write-Host ""
+
+do {
+    $input = Read-Host "請輸入選項 [1/2/3]（直接 Enter 使用預設）"
+    if ([string]::IsNullOrEmpty($input)) { $input = "1" }
+    $testMode = $input
+} while ($testMode -notin @("1", "2", "3"))
+
+Write-Host ""
+
 $script:copiedCount = 0
 $script:skippedIgnoredCount = 0
 $script:skippedTestCount = 0
@@ -240,10 +256,17 @@ Get-ChildItem -LiteralPath $resolvedSourceRoot -File -Recurse -Force | ForEach-O
         return
     }
 
-    if ($relativePath -match "(^|/)src/test/" -and
-        -not (Test-KeepTestFile -FileName $_.Name -KeepNameParts $KeepTestNameParts)) {
-        $script:skippedTestCount++
-        return
+    if ($relativePath -match "(^|/)src/test/") {
+        if ($testMode -eq "3") {
+            # 全部複製，不排除
+        }
+        elseif ($testMode -eq "1" -and (Test-KeepTestFile -FileName $_.Name -KeepNameParts $KeepTestNameParts)) {
+            # 保留例外檔案，繼續複製
+        }
+        else {
+            $script:skippedTestCount++
+            return
+        }
     }
 
     $destinationPath = Join-Path $resolvedDestinationRoot ($relativePath -replace "/", [System.IO.Path]::DirectorySeparatorChar)
@@ -266,4 +289,6 @@ Write-Host "Destination: $resolvedDestinationRoot"
 Write-Host "Copied files: $script:copiedCount"
 Write-Host "Skipped by gitignore directories: $script:skippedIgnoredCount"
 Write-Host "Skipped src/test files: $script:skippedTestCount"
-Write-Host "Kept src/test file name parts: $($KeepTestNameParts -join ', ')"
+if ($testMode -eq "1") {
+    Write-Host "Kept src/test file name parts: $($KeepTestNameParts -join ', ')"
+}
